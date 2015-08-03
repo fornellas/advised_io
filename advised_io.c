@@ -42,7 +42,7 @@ void load_original_symbols() {
   }
 }
 
-void advise_dontuse(int fd) {
+void advise_dontneed(int fd) {
   int advise_error = posix_fadvise(fd, 0, 0, POSIX_FADV_DONTNEED);
   if(advise_error != 0) {
     char * error_str;
@@ -67,13 +67,13 @@ void advise_dontuse(int fd) {
 ssize_t read(int fd, void *buf, size_t count) {
   load_original_symbols();
   // fprintf(stderr, "read(%d, ...)\n", fd);fflush(stderr);
-  advise_dontuse(fd);
+  advise_dontneed(fd);
   return (*libc_read_symbol)(fd, buf, count);
 }
 
 ssize_t write(int fd, const void *buf, size_t count) {
   load_original_symbols();
   // fprintf(stderr, "write(%d, ...)\n", fd);fflush(stderr);
-  advise_dontuse(fd);
+  advise_dontneed(fd);
   return (*libc_write_symbol)(fd, (void *)buf, count);
 }
